@@ -1,0 +1,176 @@
+package com.onceimdg.persistance;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
+import com.hazelcast.core.MapStore;
+
+public class DefaultMapStore implements MapStore {
+ 
+	private static boolean driverLoaded = false;
+	private static String dsName = null;
+
+	public static void setDataSource(String url) {
+		dsName = url;
+	}
+
+	public static String getDataSource() {
+		return dsName;
+	}
+
+	public static boolean loadDriver(String driverName) {
+		if(driverName == null){
+			System.out.println("Fail to load the database driver with null url !!!");
+			return false;
+		}
+
+		if (!driverLoaded) {
+			synchronized (driverName) {
+				try {
+					Class.forName(driverName);
+					System.out.println("Success to load the database driver.");
+					driverLoaded = true;
+
+				} catch (ClassNotFoundException e) {
+					System.out.println("Fail to load the database driver.");
+					driverLoaded = false;
+					e.printStackTrace();
+				}
+			}
+		}
+		return driverLoaded;
+	}
+
+	public void closeConnection(Connection con) {
+		try {
+			if (con != null) {
+				con.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void closeStmt(Statement stmt) {
+		try {
+			if (stmt != null) {
+				stmt.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void closeStmt(PreparedStatement stmt) {
+		try {
+			if (stmt != null) {
+				stmt.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void closeResultSet(ResultSet rs) {
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void store(Object key, Object value, String tableName) {
+		if (value != null) {
+			String sql = SQLParser.getQuerySQLFromObject((String) key, value,
+					tableName);
+			// System.out.println(sql);
+			Connection con = ConnectionPool.getConnection();
+			Statement stmt = null;
+			Statement stmt1 = null;
+			try {
+				stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery(sql);
+				if (rs != null && !rs.next()) {
+					sql = SQLParser.getInsertSQLFromObject(value, tableName);
+					// added by wangyanshi to print execute sql
+					// System.out.println(sql);
+					// added over
+					stmt1 = con.createStatement();
+					stmt1.executeUpdate(sql);
+				} else {
+					sql = SQLParser.getUpdateSQLFromObject((String) key, value,
+							tableName);
+					// added by wangyanshi to print execute sql
+					// System.out.println(sql);
+					// added over
+					stmt1 = con.createStatement();
+					stmt1.executeUpdate(sql);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				closeStmt(stmt);
+				closeStmt(stmt1);
+				closeConnection(con);
+			}
+		}
+		// System.out.println("Store.store key=" + key + ", value=" + value);
+	}
+
+	public void storeAll(Map map, String tableName) {
+		Set<Map.Entry<Object, Object>> entrys = map.entrySet();
+		for (Map.Entry<Object, Object> entry : entrys) {
+			store(entry.getKey(), entry.getValue(), tableName);
+		}
+	}
+
+	public void delete(Object key, String value) {
+		String sql = SQLParser.getDeleteSQLFromObject((String) key, value);
+		Connection con = ConnectionPool.getConnection();
+		Statement stmt = null;
+		try {
+			// added by wangyanshi to print execute sql
+			// System.out.println(sql);
+			// added over
+			stmt = con.createStatement();
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeStmt(stmt);
+			closeConnection(con);
+		}
+	}
+
+	public void deleteAll(Collection keys, String table) {
+		for (Object key : keys) {
+			delete((String) key, table);
+		}
+	}
+
+	public Object load(Object key) {
+
+		return null;
+	}
+
+	public Set loadAllKeys() {
+		// System.out.println("Loader.loadAllKeys ");
+		// Set keys = new HashSet();
+		// keys.add("key");
+		// return keys;
+		return null;
+	}
+
+	public Map loadAll(Collection keys) {
+
+		return null;
+	}
+}

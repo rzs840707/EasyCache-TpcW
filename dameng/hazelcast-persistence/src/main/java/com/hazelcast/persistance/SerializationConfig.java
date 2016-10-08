@@ -1,0 +1,17 @@
+package com.hazelcast.persistance;
+
+/**
+ * XXXFactoryId need to be consistence with XXXClassId
+ * @author zhaohui liu 
+ * This file need to be consistence with hazelcast.xml
+ */
+public class SerializationConfig {
+	public final static int persistanceConfigFactoryId = 100;
+	public final static int persistanceConfigClassId = 100;
+ 
+	public final static int peopleFactoryId = 127;
+	public final static int peopleConfigClassId = 127; 
+	
+	public final static int humanFactoryId = 120;
+	public final static int humanConfigClassId = 120; 
+}

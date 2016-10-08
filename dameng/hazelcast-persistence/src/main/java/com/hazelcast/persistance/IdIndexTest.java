@@ -1,0 +1,33 @@
+package com.hazelcast.persistance;
+
+import com.hazelcast.config.Config;
+import com.hazelcast.config.IdGeneratorConfig;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
+import com.hazelcast.core.IdGenerator;
+
+import java.util.Map;
+import java.util.Queue;
+
+public class IdIndexTest {
+
+    public static void main(String[] args) {
+    }
+    
+    public void testIdGenerator(){
+    	Config cfg = new Config();
+    	HazelcastInstance hz = Hazelcast.newHazelcastInstance(cfg);
+    	IdGenerator idGenerator = hz.getIdGenerator("customer-ids");
+    	idGenerator.init(123L); //Optional
+    	long id = idGenerator.newId();
+    	System.out.println(id);
+    }
+    
+    public void testIndex(){
+		HazelcastInstance hz = Hazelcast.newHazelcastInstance(null);
+		IMap mapP = hz.getMap("customers");
+		mapP.addIndex("age", true);        // ordered, since we have ranged queries for this field
+		mapP.addIndex("active", false);    // not ordered, because boolean field cannot have range
+    }
+}

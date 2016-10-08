@@ -1,0 +1,17 @@
+package org.hazelcast.load;
+
+import org.hazelcast.jdbc.DBHelper;
+
+import com.hazelcast.sqlclient.load.Loader;
+
+public class LoadData {
+	
+	static{
+		Loader loader = new Loader(DBHelper.driver, DBHelper.url, DBHelper.user, DBHelper.password);
+		long start = System.currentTimeMillis();
+		loader.loadData();
+		long end = System.currentTimeMillis();
+		System.out.println( "loadData Time : " + (end - start));
+
+	}
+}

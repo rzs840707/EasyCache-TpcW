@@ -1,0 +1,57 @@
+package org.hazelcast.populate;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+public class ClobPopulate {
+	
+	private static Connection con = null;
+	
+	public static void createTables(){
+		try {
+			PreparedStatement statement = con
+					.prepareStatement("CREATE TABLE CLOB_XX1 ( ID int PRIMARY KEY, CLOB_VALUE CLOB)");
+			statement.executeUpdate();
+			System.out.println("Created table CLOB_XX1");
+		} catch (java.lang.Exception ex) {
+			System.out.println("Unable to create table: CLOB_XX1");
+			ex.printStackTrace();
+			System.exit(1);
+		}
+		try {
+			PreparedStatement statement = con
+					.prepareStatement("CREATE SEQUENCE CLOB_XX1_SEQ minvalue 1 no maxvalue START WITH 1 increment by 1 no cycle no cache");
+			statement.executeUpdate();
+			System.out.println("Created table CLOB_XX1's SEQUENCE");
+		} catch (java.lang.Exception ex) {
+			System.out.println("Unable to create sequence: CLOB_XX1");
+			ex.printStackTrace();
+			System.exit(1);
+		}
+	}
+	
+	public static void deleteTables() {
+		int i;
+		String[] tables = { "CLOB_XX1" };
+		int numTables = tables.length;
+
+		for (i = 0; i < numTables; i++) {
+			try {
+				PreparedStatement statement = con.prepareStatement("DROP TABLE " + tables[i]);
+				statement.executeUpdate();
+				System.out.println("Dropped table " + tables[i]);
+			} catch (java.lang.Exception ex) {
+				System.out.println("Unable to drop table " + tables[i]);
+			}
+			try {
+				// Delete each table sequence in the tables array
+				PreparedStatement statement = con.prepareStatement("DROP SEQUENCE " + tables[i]+"_SEQ");
+				statement.executeUpdate();
+				System.out.println("Dropped table sequence " + tables[i]);
+			} catch (java.lang.Exception ex) {
+				System.out.println("Unable to drop table sequence " + tables[i]);
+			}
+		}
+		System.out.println("Done deleting tables!");
+	}
+}

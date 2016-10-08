@@ -1,0 +1,5 @@
+package org.hazelcast.simpletest;
+
+public class StringTest {
+
+}

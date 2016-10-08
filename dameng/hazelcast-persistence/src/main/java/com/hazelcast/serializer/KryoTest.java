@@ -1,0 +1,31 @@
+package com.hazelcast.serializer;
+
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
+import com.hazelcast.serializer.entity.Person;
+
+public class KryoTest {
+	
+	public void test() {
+		HazelcastInstance hz = Hazelcast.newHazelcastInstance();
+		IMap<String, Person> map = hz.getMap("People");
+		
+		Person people = new Person();
+		people.setId("1");
+		people.setName("test_kryo_1");
+		
+		map.put("id=1", people);
+		
+		people = new Person();
+		people.setName("test_kryo_2");
+		map.put("id=2", people);
+		
+		String name = map.get("id=1").getName();
+		System.out.println(name);
+		Hazelcast.shutdownAll();
+	}
+	public static void main(String[] args) {
+		new KryoTest().test();
+	}
+}

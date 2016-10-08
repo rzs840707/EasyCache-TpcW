@@ -1,0 +1,121 @@
+package com.onceimdg.persistance;
+
+import java.util.Map;
+
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
+
+/**
+ * @author zhaohui liu
+ * @category Test the persistance to relational database of IMDG by testing CRUD 
+ */
+public class PersistanceTest {
+	private final String mapName = "People";
+
+	private final int idInsert = 255;
+	private final int idInsert2 = 258;
+	private final int idUpdate = 256;
+	private final int idDelete = 257;
+	
+	private final int testTimes = 5;
+
+	//k-v 
+	//key must be "id=*" 
+	private final String idInsertString = "id=" + idInsert;
+	private final String idInsertString2 = "id=" + idInsert2;
+	private final String idUpdateString = "id=" + idUpdate;
+	private final String idDeleteString = "id=" + idDelete;
+
+	//k-v 
+	//while value must be JavaBean like People.java, even String is illegal!!!
+	private final String nameInsert = "Insert" + testTimes;
+	private final String nameInsert2 = "Insert2_" + testTimes;
+	private final String nameUpdateOld = "UpdateOld" + testTimes;
+	private final String nameUpdateNew = "UpdateNew" + testTimes;
+	private final String nameDelete = "Delete" + testTimes;
+
+	public static void main(String[] args) {
+		PersistanceTest pt = new PersistanceTest();
+		pt.testCreate();
+//		pt.testUpdate();
+//		pt.testDelete();
+//		pt.testRead();
+		System.out.println("PersistanceTest successfully !!!");
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Hazelcast.shutdownAll();
+	}
+
+	/**
+	 * Test Create new record to relational database through IMDG persistance
+	 */
+	public void testCreate() {
+		HazelcastInstance hz = Hazelcast.newHazelcastInstance(null);
+		
+		IMap<String, People> map1 = hz.getMap(mapName);
+		People people1 = new People();
+		people1.setId(idInsert);
+		people1.setName(nameInsert);
+		map1.put(idInsertString, people1);
+		
+		People people2 = new People();
+		people2.setId(idInsert2);
+		people2.setName(nameInsert2);
+		map1.put(idInsertString2, people2);
+	}
+
+	/**
+	 *  Test Update old record in relational database through IMDG persistance
+	 */
+	public void testUpdate() {
+		HazelcastInstance hz = Hazelcast.newHazelcastInstance(null);
+		Map<String, People> mapPeople = hz.getMap(mapName);
+
+		People people = new People();
+		people.setId(idUpdate);
+		people.setName(nameUpdateOld);
+		mapPeople.put(idUpdateString, people);
+		
+		people.setName(nameUpdateNew);
+		mapPeople.put(idUpdateString, people);
+	}
+
+	/**
+	 * Test Delete record in relational database through IMDG persistance
+	 */
+	public void testDelete() {
+		HazelcastInstance hz = Hazelcast.newHazelcastInstance(null);
+		Map<String, People> mapPeople = hz.getMap(mapName);
+
+		People people = new People();
+		people.setId(idDelete);
+		people.setName(nameDelete);
+
+		mapPeople.put(idDeleteString, people);
+
+		mapPeople.remove(idDeleteString);
+	}
+
+	/**
+	 * Test Read record from relational database through IMDG persistance
+	 */
+	public void testRead() {
+		HazelcastInstance hz = Hazelcast.newHazelcastInstance(null);
+		Map<String, People> mapPeople = hz.getMap(mapName);
+		
+		People peopleInsert = mapPeople.get(idInsertString);
+		System.out.println(peopleInsert.toString());
+		People peopleUpdate = mapPeople.get(idUpdateString);
+		System.out.println(peopleUpdate.toString());
+		People peopleDelete = mapPeople.get(idDeleteString);
+		if(peopleDelete == null){
+			System.out.println(idDeleteString + " have been successfully deleted !!");
+		}else {
+			System.out.println(peopleDelete.toString());
+		}
+	}
+}

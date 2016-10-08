@@ -1,0 +1,13 @@
+package org.hazelcast.simpletest;
+
+public class StringTest {
+	private static String sql = "  select * from table ";
+	
+	public static void trim(String sql) {
+		System.out.println(sql.trim());
+	}
+	
+	public static void main(String [] args) {
+		trim(sql);
+	}
+}

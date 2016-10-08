@@ -1,0 +1,32 @@
+package org.hazelcast.populate;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+public class ClobPopulate {
+	
+	private static Connection con = null;
+	
+	public static void createTables(){
+		try {
+			PreparedStatement statement = con
+					.prepareStatement("CREATE TABLE ADDRESS ( ADDR_ID int PRIMARY KEY, ADDR_STREET1 varchar(40),ADDR_STREET2 varchar(40), ADDR_CITY varchar(30), ADDR_STATE varchar(20),ADDR_ZIP varchar(10), ADDR_CO_ID int)");
+			statement.executeUpdate();
+			System.out.println("Created table ADDRESS");
+		} catch (java.lang.Exception ex) {
+			System.out.println("Unable to create table: ADDRESS");
+			ex.printStackTrace();
+			System.exit(1);
+		}
+		try {
+			PreparedStatement statement = con
+					.prepareStatement("CREATE SEQUENCE ADDRESS_SEQ minvalue 1 no maxvalue START WITH 1 increment by 1 no cycle no cache");
+			statement.executeUpdate();
+			System.out.println("Created table ADDRESS'S SEQUENCE");
+		} catch (java.lang.Exception ex) {
+			System.out.println("Unable to create sequence: ADDRESS");
+			ex.printStackTrace();
+			System.exit(1);
+		}
+	}
+}

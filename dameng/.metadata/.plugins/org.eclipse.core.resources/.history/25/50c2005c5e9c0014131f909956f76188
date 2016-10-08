@@ -1,0 +1,43 @@
+package org.hazelcast.testSample;
+
+import java.sql.Connection;
+
+import com.hazelcast.sqlclient.jdbc.IMDGConnection;
+import com.hazelcast.sqlclient.load.Loader;
+
+public class IMDGHelper {
+	private static Connection con = null;
+
+	public static Connection getConnection() {
+		con = DBHelper.getConnection();
+		if (con != null) {
+			return new IMDGConnection(con);
+		} else {
+			System.out.println("get connection failed.");
+			return null;
+		}
+	}
+
+	public static Connection getConnection2() {
+		con = DBHelper.getConnection();
+		if (con != null) {
+			return con;
+		} else {
+			System.out.println("get connection failed.");
+			return null;
+		}
+	}
+
+	public static void closeConnection() {
+		DBHelper.closeConnection();
+	}
+
+	public static void loadData() {
+		Loader loader = new Loader();
+		long start = System.currentTimeMillis();
+		loader.loadData();
+		long end = System.currentTimeMillis();
+		System.out.println("loadData Time : " + (end - start));
+	}
+
+}

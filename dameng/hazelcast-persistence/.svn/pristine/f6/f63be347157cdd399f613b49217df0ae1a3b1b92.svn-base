@@ -1,0 +1,18 @@
+package com.onceimdg.persistance;
+
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
+import com.onceimdg.serializer.entity.PortableCase;
+
+public class PortableTest {
+	public static void main(String[] args) {
+		HazelcastInstance hz = Hazelcast.newHazelcastInstance(null);
+		
+		IMap<String, PortableCase> map = hz.getMap("PortableTest");
+		PortableCase test = new PortableCase();
+		map.put("test", test);
+		test = map.get("test");
+		Hazelcast.shutdownAll();
+	}
+}

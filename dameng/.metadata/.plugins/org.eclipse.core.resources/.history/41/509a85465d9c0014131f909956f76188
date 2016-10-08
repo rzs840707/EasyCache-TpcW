@@ -1,0 +1,5 @@
+package org.hazelcast.load;
+
+public class LoadData {
+
+}

@@ -1,0 +1,9 @@
+package com.hazelcast.sqlclient.utility;
+
+public class IMDGPrint {
+	
+	public static void print(String str) {
+		System.out.println("--IMDG--" + str + "--IMDG--");
+	}
+	
+}

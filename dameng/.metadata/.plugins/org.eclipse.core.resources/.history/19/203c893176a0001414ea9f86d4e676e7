@@ -1,0 +1,5 @@
+package com.hazelcast.sqlclient.utility;
+
+public class IMDGPrint {
+
+}

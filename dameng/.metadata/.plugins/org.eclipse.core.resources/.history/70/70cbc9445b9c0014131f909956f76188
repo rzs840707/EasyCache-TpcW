@@ -1,0 +1,5 @@
+package org.hazelcast.jdbc;
+
+public class DBHelper {
+
+}

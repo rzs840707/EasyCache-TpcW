@@ -1,0 +1,15 @@
+package org.hazelcast.simpletest;
+
+import org.hazelcast.utility.Print;
+
+public class StringTest {
+	private static String sql = "  select * from table ";
+	
+	public static void trim(String sql) {
+		Print.show(sql);
+	}
+	
+	public static void main(String [] args) {
+		trim(sql);
+	}
+}

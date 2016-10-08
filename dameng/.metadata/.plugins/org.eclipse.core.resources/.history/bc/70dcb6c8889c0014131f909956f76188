@@ -1,0 +1,54 @@
+package org.hazelcast.jdbc;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DBHelper {
+	public static String driver;
+	public static String url;
+	public static String user;
+	public static String password;
+	private static Connection con = null;
+	private static String dbType = "shentong";
+	static{
+		
+		if (dbType.equals("mysql")) {
+			driver = "com.mysql.jdbc.Driver";
+			url = "jdbc:mysql://127.0.0.1:3306/bench4q";
+			user = "root";
+			password = "root";
+		}
+		else if (dbType.equals("shentong")) {
+			driver = "com.oscar.Driver";
+			url = "jdbc:oscar://133.133.133.97:2003/IMDG";
+			user = "IMDGTEST";
+			password = "szoscar55";
+		}
+		else {
+			try {
+				throw new Exception("error dbType: " + dbType);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static Connection getConnection(){
+		try {
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, user, password);
+			return con;
+		} catch (java.lang.Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static void closeConnection() {
+		try {
+			con.close();
+		} catch (java.lang.Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+}

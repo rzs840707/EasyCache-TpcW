@@ -1,0 +1,147 @@
+package com.hazelcast.sqlclient.jdbc;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.DriverPropertyInfo;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.Enumeration;
+import java.util.Properties;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+import com.hazelcast.sqlclient.load.ConfigParser;
+import com.hazelcast.sqlclient.load.Loader;
+import com.hazelcast.sqlclient.utility.ProxoolManager;
+
+public class IMDGDriver implements java.sql.Driver {
+	public static boolean loadflag = false;
+//	private static InitialContext ctx = null;
+//	private static String dsName = ConfigParser.getInstance().configParseGetDsName();
+	
+	static {
+		try {
+//			try {
+				java.sql.DriverManager.registerDriver(new IMDGDriver());
+//			} catch (NamingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+		} catch (SQLException E) {
+			throw new RuntimeException("Can't register driver!");
+		}
+	}
+
+	public Connection dslookup() {
+		Connection con = null;
+		try {
+			String relDriver = "com.oscar.Driver";
+			String relUrl = "jdbc:oscar://localhost:2003/IMDG";
+//			String relUrl = "jdbc:oscar://localhost:2003/osrdb";
+//			String relUser = "esb";
+//			String relPassword = "esb";
+			String relUser = "SYSDBA";
+			String relPassword = "szoscar55";
+			
+			Enumeration<java.sql.Driver> dsd1 = DriverManager.getDrivers();
+			while(dsd1.hasMoreElements()){
+				java.sql.Driver d = dsd1.nextElement();
+				if(d instanceof com.hazelcast.sqlclient.jdbc.IMDGDriver){
+					java.sql.DriverManager.deregisterDriver(d);
+				}
+			}
+			
+			Class.forName(relDriver);
+			con = DriverManager.getConnection(relUrl, relUser, relPassword);
+			java.sql.DriverManager.registerDriver(new IMDGDriver());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return con;
+	}
+	
+	public Connection dslookup_lookup(){
+		return ProxoolManager.getProxoolConnection();
+	}
+	
+//	public IMDGDriver() throws SQLException, NamingException {
+//		if(ctx == null) {
+//			ctx = new InitialContext();
+//		}
+//	} 
+	
+	public Connection connect(String url, Properties info) throws SQLException {
+		//jiang yong 2014-1-9
+		//for DriverManager.getconnection return wrong connection
+		if(!url.contains("jdbc:imdg")){
+			return null;
+		}
+		//done
+		
+		if(!loadflag) {
+			synchronized (IMDGDriver.class) {
+				if(!loadflag) {
+					Loader loader = new Loader();
+					long start = System.currentTimeMillis();
+					loader.loadData();
+					long end = System.currentTimeMillis();
+					DecimalFormat fnum = new DecimalFormat("##0.00");    
+					String time=fnum.format((float)(end-start)/1000);       
+					System.out.println("data loaded done in " + time + " s");
+				}
+				loadflag = true;
+			}
+		}
+		DataSource ds = null;
+		try {
+			ds = (DataSource) ctx.lookup(dsName);
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+		return new IMDGConnection(ds.getConnection());
+//		return new IMDGConnection(this.dslookup());
+	}
+
+	@SuppressWarnings("finally")
+	public boolean acceptsURL(String url) throws SQLException {
+//		DataSource ds = null;
+//		try {
+//			ds = (DataSource) ctx.lookup(dsName);
+//		} catch (NamingException e) {
+//			e.printStackTrace();
+//		}
+//		if(ds != null) {
+//			if(ds.getConnection() != null) return true;
+//			else  return false;
+//		} else {
+//			return false;
+//		}
+		try{
+			if(this.dslookup() != null){ return true; }
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally{
+			return false;
+		}
+	}
+
+	public DriverPropertyInfo[] getPropertyInfo(String url, Properties info)
+			throws SQLException {
+		return null;
+	}
+
+	public int getMajorVersion() {
+		return 1;
+	}
+
+	public int getMinorVersion() {
+		return 1;
+	}
+
+	public boolean jdbcCompliant() {
+		return true;
+	}
+	
+}

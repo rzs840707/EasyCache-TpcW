@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/cglib-nodep-2.2.2.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/commons-dbcp-1.4.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/commons-pool-1.6.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/javaee-api-6.0.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/jsqlparser-0.7.0.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/kryo-2.22.jar" sourcepath="lib/kryo-2.22.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/log4j-1.2.12.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/mockito-all-1.8.2.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/mysql-connector-java-5.1.2.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/ojdbc6-11.1.0.6.0.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/oscarJDBC-7.0.85.jar"/>
+	<classpathentry kind="lib" path="D:/WorkSpace/hazelcast-sqlclient/lib/xml-apis-1.0.b2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hazelcast-persistence"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

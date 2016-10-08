@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="bench4Q_DaMeng_EasyCache"
+  id="myeclipse.1399881263556"
+  context-root="/bench4Q_DaMeng_EasyCache"
+  j2ee-spec="6.0"
+  archive="bench4Q_DaMeng_EasyCache.war">
+  <attributes>
+    <attribute name="webrootdir" value="/WebRoot" />
+  </attributes>
+</project-module>
+

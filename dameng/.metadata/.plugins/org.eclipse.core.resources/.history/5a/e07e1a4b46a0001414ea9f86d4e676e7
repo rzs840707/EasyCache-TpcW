@@ -1,0 +1,74 @@
+package org.hazelcast.populate;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Random;
+
+import org.hazelcast.jdbc.DBHelper;
+
+public class DeleteTables {
+	private static Connection con = null;
+	private static Random rand = new Random();
+	final private static int SKNum = 3600;
+	final private static int UKNum = 4800;
+	final private static int batchNum = 1000;
+	final private static int itemNum = 1000;
+	final private static int ebNum = 5;
+
+	private static int customersNum;
+	private static int addrNum;
+	private static int authorsNum;
+	private static int ordersNum;
+
+	
+	public static void init(){
+		customersNum = ebNum * 2880;
+		addrNum = 2 * customersNum;
+		authorsNum = (int) (0.25 * itemNum);
+		ordersNum = (int) (0.9 * customersNum);
+		
+	}
+	
+	
+	public static void deleteTables() {
+		int i;
+		String[] tables = { "ADDRESS", "AUTHOR", "CC_XACTS", "COUNTRY", "CUSTOMER", "ITEM",
+				"ORDER_LINE", "ORDERS", "SHOPPING_CART", "SHOPPING_CART_LINE", "STRINGKEY", "UNIONKEY"};
+//		String[] tables = { "ADDRESS", "STRINGKEY", "UNIONKEY" };
+		int numTables = tables.length;
+
+		for (i = 0; i < numTables; i++) {
+			try {
+				// Delete each table listed in the tables array
+				PreparedStatement statement = con.prepareStatement("DROP TABLE " + tables[i]);
+				statement.executeUpdate();
+				System.out.println("Dropped table " + tables[i]);
+			} catch (java.lang.Exception ex) {
+				System.out.println("Unable to drop table " + tables[i]);
+			}
+			try {
+				// Delete each table sequence in the tables array
+				PreparedStatement statement = con.prepareStatement("DROP SEQUENCE " + tables[i]+"_SEQ");
+				statement.executeUpdate();
+				System.out.println("Dropped table sequence " + tables[i]);
+			} catch (java.lang.Exception ex) {
+				System.out.println("Unable to drop table sequence " + tables[i]);
+			}
+		}
+		System.out.println("Done deleting tables!");
+	}
+	
+
+	public static void start(){
+		con = DBHelper.getConnection();
+		deleteTables();
+		DBHelper.closeConnection();
+	}
+	
+	public static void main(String[] args) {
+		start();
+	}
+}
